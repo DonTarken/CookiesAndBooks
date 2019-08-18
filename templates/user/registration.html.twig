@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+{% form_theme formRegistration 'bootstrap_4_layout.html.twig' %}
+{% block title %}Registration :: CookiesAndBooks{% endblock %}
+
+{% block body %}
+
+{{ form_start(formRegistration) }}
+<!-- Default form register -->
+    <div class="mx-auto col-6">
+    
+    <p class="h4 mb-4">Inscription</p>
+
+    <div class="form-row">
+        <div class="col">
+            <!-- Username -->
+            {{ form_row(formRegistration.username, {'attr': {
+                            'class': "form-control mb-2",
+                            'placeholder': "Username"
+                        }
+                        }) }}
+        </div>
+    </div>
+
+    <!-- E-mail -->
+    {{ form_row(formRegistration.email, {'attr': {
+                            'class': "form-control mb-4",
+                            'placeholder': "Email"
+                        }
+                        }) }}
+
+    <!-- Password -->
+    
+    {{ form_row(formRegistration.password, {'attr': {
+                            'class': "form-control",
+                            'aria-describedby': "defaultRegisterFormPasswordHelpBlock",
+                            'placeholder': "Password"
+                        }
+                        }) }}
+    
+
+    <!-- Confirm Password -->
+    {{ form_row(formRegistration.confirm_password, {'attr': {
+                            'class': "form-control",
+                            'aria-describedby': "defaultRegisterFormConfirmPasswordHelpBlock",
+                            'placeholder': "Confirm Password"
+                        }
+                        }) }}
+<small id="defaultRegisterFormPasswordHelpBlock" class="form-text text-muted mb-4">
+        At least 8 characters and 1 digit
+    </small>
+    <!-- Sign up button -->
+    <button class="btn btn-info my-4 btn-block" type="submit">Inscription</button>
+
+    <!-- Social register -->
+    <p>or sign up with:</p>
+
+    <a type="button" class="light-blue-text mx-2">
+        <i class="fab fa-facebook-f"></i>
+    </a>
+    <a type="button" class="light-blue-text mx-2">
+        <i class="fab fa-twitter"></i>
+    </a>
+    <a type="button" class="light-blue-text mx-2">
+        <i class="fab fa-linkedin-in"></i>
+    </a>
+    <a type="button" class="light-blue-text mx-2">
+        <i class="fab fa-github"></i>
+    </a>
+
+    <hr>
+
+    <!-- Terms of service -->
+    <p>By clicking
+        <em>Sign up</em> you agree to our
+        <a href="" target="_blank">terms of service</a>
+
+    </div>
+<!-- Default form register -->
+{{ form_end(formRegistration) }}
+
+{% endblock %}
