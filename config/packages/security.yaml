@@ -4,6 +4,7 @@ security:
             algorithm: auto
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
+        in_memory: { memory: ~ }
         in_database:
             entity:
                 class: App\Entity\User
@@ -14,8 +15,18 @@ security:
             security: false
         main:
             anonymous: true
-            
+
             provider: in_database
+
+            guard:
+                authenticators:
+                    - App\Security\LoginFormAuthenticator
+
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800
+                path: /
+                samesite: strict
 
             form_login:
                 login_path: user_login
@@ -26,6 +37,7 @@ security:
             logout:
                 path: user_logout
                 target: home
+            access_denied_url: home
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
 
@@ -34,9 +46,11 @@ security:
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
-   
+
     access_control:
-        # - { path: ^/member/login, roles: IS_AUTHENTICATED_ANONYMOUSLY && !IS_AUTHENTICADED_FULLY }
+        - { path: ^/member/login$, allow_if: "not is_granted('ROLE_USER')" }
+        - { path: ^/member/registration$, allow_if: "not is_granted('ROLE_USER')" }
+        # - { path: ^/member/login$, role: IS_AUTHENTICATED_ANONYMOUSLY && !IS_AUTHENTICATED_FULLY }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
-        
+

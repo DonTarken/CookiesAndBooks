@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+// use App\Security\LoginFormAuthenticator;
 use App\Entity\User;
 use App\Form\RegistrationType;
 
@@ -39,11 +40,10 @@ class UserController extends AbstractController
             $manager->flush();
 
             $user_token = $user->getApiToken();
-            $user_username = $user->getUsername();
 
-            $url = "http://127.0.0.1:8000/member/confirm/". $user_token ."/". $user_username ."";
+            $url = "http://127.0.0.1:8000/member/confirm/". $user_token ."";
 
-            $message = (new \Swift_Message('Hello Email'))
+            $message = (new \Swift_Message('Bienvenue sur Cookies And Books !'))
                     ->setFrom('send@example.com')
                     ->setTo($user->getEmail())
                     ->setBody(
@@ -54,7 +54,7 @@ class UserController extends AbstractController
                         ),
                         'text/html'
                     );
-            
+
             $mailer->send($message);
 
             return $this->redirectToRoute('user_login');
@@ -83,16 +83,15 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/member/confirm/{token}/{username}", name="confirm_account")
+     * @Route("/member/confirm/{token}", name="confirm_account")
      */
-    public function confirmAccount($token, $username, ObjectManager $manager) 
+    public function confirmAccount($token, ObjectManager $manager) 
     {
-        
+
         $user = $this->getDoctrine()
                      ->getRepository(User::class)
                      ->findOneBy([
-                         'apiToken' => $token,
-                         'username' => $username
+                         'apiToken' => $token
                      ]);
 
         $error = 0;
@@ -110,7 +109,6 @@ class UserController extends AbstractController
         }
 
         return $this->render('emails/confirmAccount.html.twig', [
-            'user' => $username,
             'error' => $error
         ]);
     }

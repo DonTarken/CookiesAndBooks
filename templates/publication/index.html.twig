@@ -9,16 +9,18 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+{{dump(app.request)}}
 
-    <pre>
-        {{ dump(request) }}
-    </pre>
+    {% if app.user %}
+        <h1>Salut {{ app.user.username }} !</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/Users/Dev/Desktop/CookiesAndBooks/src/Controller/PublicationController.php'|file_link(0) }}">src/Controller/PublicationController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/Users/Dev/Desktop/CookiesAndBooks/templates/publication/index.html.twig'|file_link(0) }}">templates/publication/index.html.twig</a></code></li>
-    </ul>
+        <pre>
+            {{ dump(app) }}
+        </pre>
+    {% else %}
+        <h1>Bienvenue sur mon site</h1>
+    {% endif %}
+
+
 </div>
 {% endblock %}

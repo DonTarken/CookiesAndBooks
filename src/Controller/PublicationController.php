@@ -15,7 +15,7 @@ class PublicationController extends AbstractController
     public function index() :Response
     {
         $request = Request::createFromGlobals();
-        
+
         return $this->render('publication/index.html.twig', [
             'controller_name' => 'PublicationController',
             'request' => $request
