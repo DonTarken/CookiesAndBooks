@@ -2,11 +2,41 @@
 
 {% block body %}
 
-<h1>Profile de {{user.username}}</h1>
-<p><i>Email : </i>{{user.email}}</p>
 
-{% if is_user %}
-    <a href="{{path('user_edit', {'username': app.user.username})}}" class="btn btn-primary">Profile Edite</a>
-{% endif %}
+<div class="row">
+    <div class="profile">
+        <header style="background-color: white;" class="header_profile">
+        <div class="wrapper-info-profile">
+            <img class="avatar_profile m-2 rounded-lg" src="" alt="" style="background-color: orange;">
+            <div class="info_profile p-2">
+                <h3 class="p-1" style="">{{user.username}}</h3>
+                <div class="social">
+                    <button class="btn btn-success">Follow</button>
+                    <button class="btn btn-danger">like</button>
+                </div>
+            </div>
+        </div>
+            <div class="number_profile col m-2 mb-3 " style="text-align: center;">
+                <div class="follow pr-4">
+                    <p class="m-0">5.2k</p>
+                    <p class="m-0">Followers</p>
+                </div>
+                <div class="like pl-4">
+                    <p class="m-0">300</p>
+                    <p class="m-0">Likes</p>
+                </div>
+            </div>
+        
+        </header>
+        <nav class="nav-profile col">
+            {% if is_user %}
+            <a href="{{path('user_edit', {'username': app.user.username})}}" class="profile-button btn btn-primary">Profile Edite</a>
+            {% endif %}
+        </nav>
+    </div>
+</div>
+
+
+
 
 {% endblock %}
