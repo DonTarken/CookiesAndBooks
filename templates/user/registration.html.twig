@@ -7,7 +7,6 @@
 {{ form_start(formRegistration) }}
 <!-- Default form register -->
     <div class="mx-auto col-6">
-    
     <p class="h4 mb-4">Inscription</p>
 
     <div class="form-row">
@@ -29,14 +28,12 @@
                         }) }}
 
     <!-- Password -->
-    
     {{ form_row(formRegistration.password, {'attr': {
                             'class': "form-control",
                             'aria-describedby': "defaultRegisterFormPasswordHelpBlock",
                             'placeholder': "Password"
                         }
                         }) }}
-    
 
     <!-- Confirm Password -->
     {{ form_row(formRegistration.confirm_password, {'attr': {
@@ -45,7 +42,7 @@
                             'placeholder': "Confirm Password"
                         }
                         }) }}
-<small id="defaultRegisterFormPasswordHelpBlock" class="form-text text-muted mb-4">
+    <small id="defaultRegisterFormPasswordHelpBlock" class="form-text text-muted mb-4">
         At least 8 characters and 1 digit
     </small>
     <!-- Sign up button -->

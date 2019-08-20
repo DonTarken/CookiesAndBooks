@@ -1,0 +1,23 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+
+    <h1>Edition du profile</h1>
+        {{form_start(formEdit)}}
+        {{form_row(formEdit.username)}}
+        {{form_row(formEdit.email)}}
+        {{form_row(formEdit.new_password, {
+            'required': false
+        })}}
+        {{form_row(formEdit.confirm_new_password, {
+            'required': false
+        })}}
+        {{form_row(formEdit.description)}}
+        {{form_row(formEdit.avatar)}}
+        <button type="submit" class="btn btn-success">Enregistrer</button>
+        {{form_end(formEdit)}}
+
+
+
+{% endblock %}

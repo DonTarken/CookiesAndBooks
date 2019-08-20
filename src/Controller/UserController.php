@@ -6,14 +6,17 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\RegistrationType;
 
+use App\Form\EditionProfileType;
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
+
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class UserController extends AbstractController
 {
@@ -75,7 +78,6 @@ class UserController extends AbstractController
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
-
         return $this->render('user/login.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error
@@ -85,12 +87,10 @@ class UserController extends AbstractController
     /**
      * @Route("/member/confirm/{token}", name="confirm_account")
      */
-    public function confirmAccount($token, ObjectManager $manager) 
+    public function confirmAccount($token, ObjectManager $manager, UserRepository $repo) 
     {
 
-        $user = $this->getDoctrine()
-                     ->getRepository(User::class)
-                     ->findOneBy([
+        $user = $repo->findOneBy([
                          'apiToken' => $token
                      ]);
 
@@ -117,4 +117,53 @@ class UserController extends AbstractController
      * @Route("/member/logout", name="user_logout")
      */
     public function logout() {}
+
+    /**
+     * @Route("/user/{username}", name="user_profile")
+     */
+    public function profile(User $user) {
+
+        $is_user = false;
+
+        if($this->getUser() && $user->getUsername() === $this->getUser()->getUsername()){
+            $is_user = true;
+        }
+
+        return $this->render('user/profile.html.twig', [
+            'user' => $user,
+            'is_user' => $is_user,
+            'test' => $this->getUser()
+        ]);
+    }
+
+    /**
+     * @Route("/user/{username}/edit", name="user_edit")
+     */
+    public function edit_profile(User $user, ObjectManager $manager, UserPasswordEncoderInterface $encoder, Request $request) {
+
+        if($user->getUsername() === $this->getUser()->getUsername()) {
+
+            $form = $this->createForm(EditionProfileType::class, $user);
+
+            $form->handleRequest($request);
+
+            if($form->isSubmitted() && $form->isValid()){
+                if($user->getNewPassword() !== NULL){
+                    $hash = $encoder->encodePassword($user, $user->getNewPassword());
+                    $user->setPassword($hash);
+                }
+
+                $manager->persist($user);
+                $manager->flush();
+            }
+
+            return $this->render('user/edit.html.twig', [
+                'formEdit' => $form->createView(),
+                'user' => $user
+            ]);
+        }
+        else {
+            return $this->redirectToRoute('home', [], 301);
+        }
+    }
 }

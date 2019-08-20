@@ -31,12 +31,13 @@ security:
             form_login:
                 login_path: user_login
                 check_path: user_login
-                # csrf_token_generator: security.csrf.token_manager
-                default_target_path: home
+                csrf_token_generator: security.csrf.token_manager
+                use_referer: true
 
             logout:
                 path: user_logout
                 target: home
+
             access_denied_url: home
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
@@ -50,6 +51,7 @@ security:
     access_control:
         - { path: ^/member/login$, allow_if: "not is_granted('ROLE_USER')" }
         - { path: ^/member/registration$, allow_if: "not is_granted('ROLE_USER')" }
+        - { path: /edit$, allow_if: "is_granted('ROLE_USER')" }
         # - { path: ^/member/login$, role: IS_AUTHENTICATED_ANONYMOUSLY && !IS_AUTHENTICATED_FULLY }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }

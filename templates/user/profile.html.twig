@@ -1,0 +1,12 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+<h1>Profile de {{user.username}}</h1>
+<p><i>Email : </i>{{user.email}}</p>
+
+{% if is_user %}
+    <a href="{{path('user_edit', {'username': app.user.username})}}" class="btn btn-primary">Profile Edite</a>
+{% endif %}
+
+{% endblock %}

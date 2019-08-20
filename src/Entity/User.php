@@ -50,6 +50,16 @@ class User implements UserInterface
     public $confirm_password;
 
     /**
+     * @Assert\Length(min="8", minMessage="Votre mot de passe doit faire minimum 8 caractères")
+     */
+    public $new_password;
+
+    /**
+     * @Assert\EqualTo(propertyPath="new_password", message="Vous n'avez pas tapé le même mot de passe")
+     */
+    public $confirm_new_password;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
@@ -115,6 +125,11 @@ class User implements UserInterface
         $this->password = $password;
 
         return $this;
+    }
+
+    public function getNewPassword(): ?string
+    {
+        return $this->new_password;
     }
 
     public function getCreatedAt(): ?\DateTimeInterface

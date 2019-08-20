@@ -72,9 +72,6 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
             // fail authentication with a custom error
             throw new CustomUserMessageAuthenticationException('Erreur mauvais email ou mot de passe');
         }
-        if (!$user->getIsValidated()) {
-            throw new CustomUserMessageAuthenticationException('Vous devez valider votre compte avant de pouvoir vous connecter !');
-        }
 
         return $user;
     }
@@ -86,6 +83,9 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         if (!$checkPassword) {
             throw new CustomUserMessageAuthenticationException('Erreur mauvais email ou mot de passe');
         }
+        if (!$user->getIsValidated()) {
+            throw new CustomUserMessageAuthenticationException('Vous devez valider votre compte avant de pouvoir vous connecter !');
+        }
         return $checkPassword;
     }
 
@@ -95,7 +95,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
             return new RedirectResponse($targetPath);
         }
 
-        return new RedirectResponse($this->router->generate('home'));
+        return new RedirectResponse($this->router->generate("home"));
         // throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
     }
 

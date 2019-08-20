@@ -9,17 +9,19 @@
 </style>
 
 <div class="example-wrapper">
-{{dump(app.request)}}
 
     {% if app.user %}
-        <h1>Salut {{ app.user.username }} !</h1>
+        <h1 class="mb-3">Salut {{ app.user.username }} !</h1>
 
-        <pre>
-            {{ dump(app) }}
-        </pre>
     {% else %}
-        <h1>Bienvenue sur mon site</h1>
+        <h1 class="mb-3">Bienvenue sur mon site</h1>
     {% endif %}
+
+    {% for user in users %}
+        <p><a href="{{path('user_profile', {'username': user.username})}}">{{user.username}}</a></p>
+    {% endfor %}
+
+
 
 
 </div>

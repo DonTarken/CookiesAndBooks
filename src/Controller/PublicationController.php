@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,13 +14,15 @@ class PublicationController extends AbstractController
     /**
      * @Route("/", name="home")
      */
-    public function index() :Response
+    public function index(UserRepository $repo) :Response
     {
+        $users = $repo->findBy(['isValidated' => 1]);
         $request = Request::createFromGlobals();
 
         return $this->render('publication/index.html.twig', [
             'controller_name' => 'PublicationController',
-            'request' => $request
+            'request' => $request,
+            'users' => $users
         ]);
     }
 
