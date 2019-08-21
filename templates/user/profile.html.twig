@@ -14,7 +14,8 @@
         </div>
 
         <div class="wrapper-info-profile">
-            <img class="avatar_profile m-2" src="{% if user.avatar != NULL %}{{domaine}}/uploads/{{user.username}}/avatar/{{user.avatar}}{% endif %}" alt="">
+            {# <img class="avatar_profile m-2" src="" alt=""> #}
+            <div class="avatar_profile m-2 bg-cover" style="background-image: url('{% if user.avatar != NULL %}{{domaine}}/uploads/{{user.username}}/avatar/{{user.avatar}}{% endif %}')"></div>
             <div class="info_profile p-2">
                 <h3 class="p-1" style="">{{user.username}}</h3>
                 <div class="social">

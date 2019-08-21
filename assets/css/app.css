@@ -101,12 +101,11 @@ body {
         border-radius: 10px 10px 0px 0px;
         display: flex;
         justify-content: space-between;
-        align-items: end;    
+        align-items: flex-end;    
     }
     .avatar_profile {
         height: 200px;
         width: 200px;
-        float: left;
     }
     .wrapper-info-profile{
         display: flex;
@@ -116,7 +115,7 @@ body {
         flex-direction: column;
         justify-content: space-around;
         text-align: left;
-        align-self: end;
+        align-self: flex-end;
     }
     .number_profile{
         max-width: 250px;
@@ -132,18 +131,3 @@ body {
     .profile_button{
     }
     }
-/* @media screen and (min-width: 576px) { 
-
-    .container header {
-        height: 400px;
-    }
-    .container header .avatar {
-        
-        display: flex;
-        align-items: baseline;
-    }
-    .container header .avatar img {
-        height: 200px;
-        width: 200px;
-    }
-    } */

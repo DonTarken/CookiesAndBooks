@@ -98,11 +98,11 @@ class User implements UserInterface, \Serializable
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Assert\File(
-     *     maxSize = "2M",
      *     mimeTypes = {"image/jpeg", "image/gif", "image/png"},
      *     mimeTypesMessage = "Le fichier choisi ne correspond pas à un fichier valide",
      *     notFoundMessage = "Le fichier n'a pas été trouvé sur le disque",
-     *     uploadErrorMessage = "Erreur dans l'upload du fichier"
+     *     uploadErrorMessage = "Erreur dans l'upload du fichier",
+     *     maxSize = "2M"
      * )
      */
     private $avatar;
