@@ -8,11 +8,13 @@ use App\Form\RegistrationType;
 
 use App\Form\EditionProfileType;
 use App\Repository\UserRepository;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
-use Doctrine\Common\Persistence\ObjectManager;
 
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -23,13 +25,25 @@ class UserController extends AbstractController
     /**
      * @Route("/member/registration", name="user_registration")
      */
-    public function registration(Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder, \Swift_Mailer $mailer)
+    public function registration(Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder, \Swift_Mailer $mailer, Filesystem $filesystem)
     {
         $user = new User();
         $form = $this->createForm(RegistrationType::class, $user);
         $form->handleRequest($request);
-
         if($form->isSubmitted() && $form->isValid()) {
+
+            $dir = 'uploads';
+            $filename = 'avatar'.'.jpg';
+                try {
+                $filesystem->mkdir($dir.'/'.$user->getUsername().'');
+                $filesystem->mkdir($dir.'/'.$user->getUsername().'/avatar');
+                $filesystem->mkdir($dir.'/'.$user->getUsername().'/banner');
+                $filesystem->copy('assets/img/avatar/avatar.jpg', $dir.'/'.$user->getUsername().'/avatar/'.$filename);
+                } catch (IOExceptionInterface $exception) {
+                    echo "An error occurred while creating your directory at ".$exception->getPath();
+                }
+
+            $user->setAvatar(''.$filename.'');
 
             $hash = $encoder->encodePassword($user, $user->getPassword());
             $token = md5(uniqid(mt_rand()));
@@ -139,9 +153,17 @@ class UserController extends AbstractController
     /**
      * @Route("/user/{username}/edit", name="user_edit")
      */
-    public function edit_profile(User $user, ObjectManager $manager, UserPasswordEncoderInterface $encoder, Request $request) {
+    public function edit_profile(User $user, ObjectManager $manager, UserPasswordEncoderInterface $encoder, Request $request, Filesystem $filesystem) {
 
         if($user->getUsername() === $this->getUser()->getUsername()) {
+            $dir = 'uploads';
+            if(!$filesystem->exists($dir.'/'.$user->getUsername().'')){
+                try {
+                $filesystem->mkdir($dir.'/'.$user->getUsername().'');
+                } catch (IOExceptionInterface $exception) {
+                    echo "An error occurred while creating your directory at ".$exception->getPath();
+                }
+            }
 
             $form = $this->createForm(EditionProfileType::class, $user);
 
@@ -152,7 +174,33 @@ class UserController extends AbstractController
                     $hash = $encoder->encodePassword($user, $user->getNewPassword());
                     $user->setPassword($hash);
                 }
+                if($user->getAvatar() !== NULL) {
 
+                    try {
+                        $filesystem->mkdir($dir.'/'.$user->getUsername().'/avatar');
+                    } catch (IOExceptionInterface $exception) {
+                        echo "An error occurred while creating your directory at ".$exception->getPath();
+                    }
+                    $file_avatar_profile = $form->get('avatar')->getData();
+                    $filename_avatar_profile = 'avatar.jpg';
+                    $file_avatar_profile->move($dir.'/'.$user->getUsername().'/avatar', $filename_avatar_profile);
+                    $user->setAvatar(''.$filename_avatar_profile.'');
+                } else {
+                    $user->setAvatar('avatar.jpg');
+                }
+                if($user->getBanner() !== NULL) {
+                    try {
+                        $filesystem->mkdir($dir.'/'.$user->getUsername().'/banner');
+                    } catch (IOExceptionInterface $exception) {
+                        echo "An error occurred while creating your directory at ".$exception->getPath();
+                    }
+                    $file_banner_profile = $form->get('banner')->getData();
+                    $filename_banner_profile = 'banner'.'.jpg';
+                    $file_banner_profile->move($dir.'/'.$user->getUsername().'/banner', $filename_banner_profile);
+                    $user->setBanner(''.$filename_banner_profile.'');
+                } else {
+                    $user->setBanner('banner.jpg');
+                }
                 $manager->persist($user);
                 $manager->flush();
             }

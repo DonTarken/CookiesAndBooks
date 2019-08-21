@@ -2,12 +2,19 @@
 
 {% block body %}
 
+{% set domaine = 'http://127.0.0.1:8000' %}
+{% if user.banner != NULL %}{% endif %}
 
 <div class="row">
     <div class="profile">
-        <header style="background-color: white;" class="header_profile">
+        <header style="" class="header_profile">
+        <div class="wrapper-banner-profile bg-cover" style="background-image: url('{{domaine}}/uploads/{{user.username}}/banner/{{user.banner}}');">
+            {# <img src="{% if user.banner != NULL %}{{domaine}}/uploads/{{user.username}}/banner/{{user.banner}}{% endif %}" alt="" class="banner-profile bg-cover"> #}
+            <div class="gradiant-banner-profile"></div>
+        </div>
+
         <div class="wrapper-info-profile">
-            <img class="avatar_profile m-2 rounded-lg" src="" alt="" style="background-color: orange;">
+            <img class="avatar_profile m-2" src="{% if user.avatar != NULL %}{{domaine}}/uploads/{{user.username}}/avatar/{{user.avatar}}{% endif %}" alt="">
             <div class="info_profile p-2">
                 <h3 class="p-1" style="">{{user.username}}</h3>
                 <div class="social">
@@ -16,7 +23,7 @@
                 </div>
             </div>
         </div>
-            <div class="number_profile col m-2 mb-3 " style="text-align: center;">
+            <div class="number_profile col  pl-0 mb-3 " style="text-align: center;">
                 <div class="follow pr-4">
                     <p class="m-0">5.2k</p>
                     <p class="m-0">Followers</p>

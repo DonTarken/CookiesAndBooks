@@ -7,6 +7,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+use Serializable;
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @UniqueEntity(
@@ -18,8 +20,32 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * message="Ce nom utilisateur est déjà utilisé !"
  * )
  */
-class User implements UserInterface
+class User implements UserInterface, \Serializable
 {
+
+    /** @see \Serializable::serialize() */
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->username,
+            $this->email,
+            $this->password
+        ));
+    }
+ 
+    /** @see \Serializable::unserialize() */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->username,
+            $this->email,
+            $this->password
+        ) = unserialize($serialized, array('allowed_classes' => false));
+    }
+
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -71,8 +97,20 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\File(
+     *     maxSize = "2M",
+     *     mimeTypes = {"image/jpeg", "image/gif", "image/png"},
+     *     mimeTypesMessage = "Le fichier choisi ne correspond pas à un fichier valide",
+     *     notFoundMessage = "Le fichier n'a pas été trouvé sur le disque",
+     *     uploadErrorMessage = "Erreur dans l'upload du fichier"
+     * )
      */
     private $avatar;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $banner;
 
     /**
      * @ORM\Column(type="string", unique=true, nullable=true)
@@ -156,14 +194,26 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getAvatar(): ?string
+    public function getAvatar()
     {
         return $this->avatar;
     }
 
-    public function setAvatar(string $avatar): self
+    public function setAvatar($avatar): self
     {
         $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    public function getBanner()
+    {
+        return $this->banner;
+    }
+
+    public function setBanner($banner): self
+    {
+        $this->banner = $banner;
 
         return $this;
     }
@@ -194,7 +244,7 @@ class User implements UserInterface
 
     public function eraseCredentials() {}
     public function getSalt() {}
-        
+
     public function getRoles() {
         return ['ROLE_USER'];
     }

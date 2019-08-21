@@ -5,6 +5,7 @@
 
     <h1>Edition du profile</h1>
         {{form_start(formEdit)}}
+
         {{form_row(formEdit.username)}}
         {{form_row(formEdit.email)}}
         {{form_row(formEdit.new_password, {
@@ -14,8 +15,15 @@
             'required': false
         })}}
         {{form_row(formEdit.description)}}
-        {{form_row(formEdit.avatar)}}
+        {{form_row(formEdit.avatar, {
+            'required': false
+        })}}
+        {{form_row(formEdit.banner, {
+            'required': false
+        })}}
+
         <button type="submit" class="btn btn-success">Enregistrer</button>
+
         {{form_end(formEdit)}}
 
 
