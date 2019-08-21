@@ -104,8 +104,8 @@ body {
         align-items: flex-end;    
     }
     .avatar_profile {
-        height: 200px;
-        width: 200px;
+        height: 150px;
+        width: 150px;
     }
     .wrapper-info-profile{
         display: flex;
