@@ -13,6 +13,7 @@
     {% block stylesheets %}
         {{ encore_entry_link_tags('app') }}
     {% endblock %}
+    {% set domaine = "http://127.0.0.1:8000" %}
 </head>
 
 <body>
@@ -41,9 +42,8 @@
                         <a href="#" class="btn btn-primary" role="button" aria-pressed="true">Publier</a>
                     </li>
                     <li class="nav-item avatar">
-                        <a class="nav-link" href="#">
-                            <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-5.jpg"
-                                class="rounded-circle z-depth-0" alt="avatar image" height="35">
+                        <a class="nav-link" href="{{ path('user_profile', {'username': app.user.username }) }}">
+                            <img src="{{domaine}}/uploads/{{app.user.username}}/avatar/{{app.user.avatar}}" class="md-avatar rounded-circle size-2" alt="avatar image">
                         </a>
                     </li>
                 {% else %}

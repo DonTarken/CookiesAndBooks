@@ -34,17 +34,20 @@ class UserController extends AbstractController
         if($form->isSubmitted() && $form->isValid()) {
 
             $dir = 'uploads';
-            $filename = 'avatar'.'.jpg';
+            $filenameAvatar = 'avatar'.'.jpg';
+            $filenameBanner = 'banner'.'.jpg';
                 try {
                 $filesystem->mkdir($dir.'/'.$user->getUsername().'');
                 $filesystem->mkdir($dir.'/'.$user->getUsername().'/avatar');
                 $filesystem->mkdir($dir.'/'.$user->getUsername().'/banner');
-                $filesystem->copy('assets/img/avatar/avatar.jpg', $dir.'/'.$user->getUsername().'/avatar/'.$filename);
+                $filesystem->copy('assets/img/avatar/avatar.jpg', $dir.'/'.$user->getUsername().'/avatar/'.$filenameAvatar);
+                $filesystem->copy('assets/img/banner/banner.jpg', $dir.'/'.$user->getUsername().'/banner/'.$filenameBanner);
                 } catch (IOExceptionInterface $exception) {
                     echo "An error occurred while creating your directory at ".$exception->getPath();
                 }
 
-            $user->setAvatar(''.$filename.'');
+            $user->setAvatar(''.$filenameAvatar.'');
+            $user->setBanner(''.$filenameBanner.'');
 
             $hash = $encoder->encodePassword($user, $user->getPassword());
             $token = md5(uniqid(mt_rand()));
