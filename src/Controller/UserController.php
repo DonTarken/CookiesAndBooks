@@ -6,11 +6,12 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\RegistrationType;
 
+use App\Form\ResetPasswordType;
 use App\Form\EditionProfileType;
 use App\Repository\UserRepository;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\Request;
 
+use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -50,13 +51,13 @@ class UserController extends AbstractController
 
             $user->setPassword($hash);
             $user->setCreatedAt(new \DateTime());
-            $user->setApiToken($token);
+            $user->setConfirmEmailToken($token);
             $user->setIsValidated(0);
 
             $manager->persist($user);
             $manager->flush();
 
-            $user_token = $user->getApiToken();
+            $user_token = $user->getConfirmEmailToken();
 
             $url = "http://127.0.0.1:8000/member/confirm/". $user_token ."";
 
@@ -105,7 +106,7 @@ class UserController extends AbstractController
     {
 
         $user = $repo->findOneBy([
-                         'apiToken' => $token
+                         'confirmEmailToken' => $token
                      ]);
 
         $error = 0;
@@ -213,5 +214,73 @@ class UserController extends AbstractController
         else {
             return $this->redirectToRoute('home', [], 301);
         }
+    }
+
+    /**
+     * @Route("/member/reset_password", name="user_reset_password")
+     * @Route("/member/reset_password/{token}", name="")
+     */
+    public function resetPassword($token = NULL, ObjectManager $manager, UserRepository $repo, Request $request, \Swift_Mailer $mailer, UserPasswordEncoderInterface $encoder)
+    {
+        $userNewPassword = new User;
+        $form = $this->createForm(ResetPasswordType::class, $userNewPassword);
+        $form->handleRequest($request);
+        if($token) {
+            $user = $repo->findOneBy([
+                'resetPasswordToken' => $token
+            ]);
+            if(!$user){
+                return $this->redirectToRoute('home', [], 301);
+            }
+        }
+        if($form->isSubmitted() && $form->isValid()) {
+            if($userNewPassword->getResetPasswordEmail() !== NULL) {
+                $email = $userNewPassword->getResetPasswordEmail();
+                $token = md5(uniqid(mt_rand()));
+                $user = $repo->findOneBy([
+                    'email' => $email
+                ]);
+                $user->setResetPasswordToken($token);
+
+                $manager->persist($user);
+                $manager->flush();
+
+                $reset_password_token = $user->getResetPasswordToken();
+
+                $url = "http://127.0.0.1:8000/member/reset_password/". $reset_password_token ."";
+
+                $message = (new \Swift_Message('Demande de changement de mot de passe'))
+                        ->setFrom('send@example.com')
+                        ->setTo($user->getEmail())
+                        ->setBody(
+                            $this->renderView(
+                                // templates/emails/registration.html.twig
+                                'emails/resetPassword.html.twig',
+                                ['url' => $url]
+                            ),
+                            'text/html'
+                        );
+
+                $mailer->send($message);
+            }
+            if($userNewPassword->getNewPassword() !== NULL) {
+                $new_password = $userNewPassword->getNewPassword();
+                $user = $repo->findOneBy([
+                    'resetPasswordToken' => $token
+                ]);
+
+                $user->setResetPasswordToken(NULL);
+
+                $hash = $encoder->encodePassword($user, $new_password);
+                $user->setPassword($hash);
+                $manager->persist($user);
+                $manager->flush();
+            }
+        }
+
+        return $this->render('user/resetPassword.html.twig', [
+            'formResetPassword' => $form->createView(),
+            'token' => $token
+        ]);
     }
 }

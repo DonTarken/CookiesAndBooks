@@ -65,6 +65,11 @@ class User implements UserInterface, \Serializable
     private $email;
 
     /**
+     * @Assert\Email()
+     */
+    private $reset_password_email;
+
+    /**
      * @ORM\Column(type="string", length=255)
      * @Assert\Length(min="8", minMessage="Votre mot de passe doit faire minimum 8 caractères")
      */
@@ -115,13 +120,17 @@ class User implements UserInterface, \Serializable
     /**
      * @ORM\Column(type="string", unique=true, nullable=true)
      */
-    private $apiToken;
+    private $confirmEmailToken;
+
+    /**
+     * @ORM\Column(type="string", unique=true, nullable=true)
+     */
+    private $resetPasswordToken;
 
     /**
      * @ORM\Column(type="integer", length=1)
      */
     private $isValidated;
-
 
 
     public function getId(): ?int
@@ -149,6 +158,18 @@ class User implements UserInterface, \Serializable
     public function setEmail(string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    public function getResetPasswordEmail(): ?string
+    {
+        return $this->reset_password_email;
+    }
+
+    public function setResetPasswordEmail(string $reset_password_email): self
+    {
+        $this->reset_password_email = $reset_password_email;
 
         return $this;
     }
@@ -218,14 +239,26 @@ class User implements UserInterface, \Serializable
         return $this;
     }
 
-    public function getApiToken(): ?string
+    public function getConfirmEmailToken(): ?string
     {
-        return $this->apiToken;
+        return $this->confirmEmailToken;
     }
 
-    public function setApiToken(string $apiToken): self
+    public function setConfirmEmailToken(string $confirmEmailToken): self
     {
-        $this->apiToken = $apiToken;
+        $this->confirmEmailToken = $confirmEmailToken;
+
+        return $this;
+    }
+
+    public function getResetPasswordToken()
+    {
+        return $this->resetPasswordToken;
+    }
+
+    public function setResetPasswordToken($resetPasswordToken)
+    {
+        $this->resetPasswordToken = $resetPasswordToken;
 
         return $this;
     }
