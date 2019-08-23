@@ -1,5 +1,10 @@
 {% extends "base.html.twig" %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('profileCss') }}
+{% endblock %}
+
 {% block body %}
 
 {% set domaine = 'http://127.0.0.1:8000' %}
@@ -34,7 +39,7 @@
                     <p class="m-0">Likes</p>
                 </div>
             </div>
-        
+
         </header>
         <nav class="nav-profile col">
             {% if is_user %}

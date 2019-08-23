@@ -223,14 +223,16 @@ class UserController extends AbstractController
      * @Route("/member/reset_password", name="user_reset_password")
      * @Route("/member/reset_password/{token}", name="")
      */
-    public function resetPassword($token = NULL, ObjectManager $manager, UserRepository $repo, Request $request, \Swift_Mailer $mailer, UserPasswordEncoderInterface $encoder)
+    public function resetPassword($tokenURL = NULL, ObjectManager $manager, UserRepository $repo, Request $request, \Swift_Mailer $mailer, UserPasswordEncoderInterface $encoder)
     {
         $userNewPassword = new User;
         $form = $this->createForm(ResetPasswordType::class, $userNewPassword);
         $form->handleRequest($request);
-        if($token) {
+        var_dump($tokenURL);
+        if($tokenURL) {
+            var_dump($tokenURL);
             $user = $repo->findOneBy([
-                'resetPasswordToken' => $token
+                'resetPasswordToken' => $tokenURL
             ]);
             if(!$user){
                 return $this->redirectToRoute('home', [], 301);
@@ -278,12 +280,14 @@ class UserController extends AbstractController
                 $user->setPassword($hash);
                 $manager->persist($user);
                 $manager->flush();
+
+                return $this->redirectToRoute('user_login');
             }
         }
 
         return $this->render('user/resetPassword.html.twig', [
             'formResetPassword' => $form->createView(),
-            'token' => $token
+            'token' => $tokenURL
         ]);
     }
 }

@@ -52,7 +52,10 @@ security:
         - { path: ^/member/login$, allow_if: "not is_granted('ROLE_USER')" }
         - { path: ^/member/registration$, allow_if: "not is_granted('ROLE_USER')" }
         - { path: /edit$, allow_if: "is_granted('ROLE_USER')" }
-        # - { path: ^/member/login$, role: IS_AUTHENTICATED_ANONYMOUSLY && !IS_AUTHENTICATED_FULLY }
+
+        # - { path: ^/member/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY && !IS_AUTHENTICATED_FULLY }
+        # - { path: ^/member/registration$, roles: IS_AUTHENTICATED_ANONYMOUSLY && !IS_AUTHENTICATED_FULLY }
+
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 

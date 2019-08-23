@@ -27,6 +27,10 @@ Encore
     //.addEntry('page1', './assets/js/page1.js')
     //.addEntry('page2', './assets/js/page2.js')
 
+    //SCSS
+    .addStyleEntry('globalCss', './assets/css/global.scss')
+    .addStyleEntry('profileCss', './assets/css/profile.scss')
+
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
 
@@ -54,7 +58,7 @@ Encore
     })
 
     // enables Sass/SCSS support
-    //.enableSassLoader()
+    .enableSassLoader()
 
     // uncomment if you use TypeScript
     //.enableTypeScriptLoader()
