@@ -82,6 +82,7 @@ class User implements UserInterface, \Serializable
 
     /**
      * @Assert\Length(min="8", minMessage="Votre mot de passe doit faire minimum 8 caractères")
+     * @Assert\EqualTo(propertyPath="confirm_new_password", message="Vous n'avez pas tapé le même mot de passe")
      */
     public $new_password;
 
@@ -102,11 +103,19 @@ class User implements UserInterface, \Serializable
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\File(
+     *     maxSize = "3M", 
+     *     mimeTypes = {"image/jpeg", "image/png", "image/gif"}
+     * )
      */
     private $avatar;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\File(
+     *     maxSize = "3M", 
+     *     mimeTypes = {"image/jpeg", "image/png", "image/gif"}
+     * )
      */
     private $banner;
 

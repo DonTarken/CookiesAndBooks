@@ -160,53 +160,42 @@ class UserController extends AbstractController
     public function edit_profile(User $user, ObjectManager $manager, UserPasswordEncoderInterface $encoder, Request $request, Filesystem $filesystem) {
 
         if($user->getUsername() === $this->getUser()->getUsername()) {
+            
             $dir = 'uploads';
-            if(!$filesystem->exists($dir.'/'.$user->getUsername().'')){
-                try {
-                $filesystem->mkdir($dir.'/'.$user->getUsername().'');
-                } catch (IOExceptionInterface $exception) {
-                    echo "An error occurred while creating your directory at ".$exception->getPath();
-                }
-            }
-
+            $currentUsername = $user->getUsername();
             $form = $this->createForm(EditionProfileType::class, $user);
-
             $form->handleRequest($request);
 
             if($form->isSubmitted() && $form->isValid()){
+                $newUsername = $user->getUsername();
+                
+                if($currentUsername !== $newUsername) {
+                    $filesystem->rename($dir.'/'.$currentUsername.'', $dir.'/'.$newUsername.'');
+                }
                 if($user->getNewPassword() !== NULL){
                     $hash = $encoder->encodePassword($user, $user->getNewPassword());
                     $user->setPassword($hash);
                 }
                 if($user->getAvatar() !== NULL) {
-
-                    try {
-                        $filesystem->mkdir($dir.'/'.$user->getUsername().'/avatar');
-                    } catch (IOExceptionInterface $exception) {
-                        echo "An error occurred while creating your directory at ".$exception->getPath();
-                    }
                     $file_avatar_profile = $form->get('avatar')->getData();
                     $filename_avatar_profile = 'avatar.jpg';
-                    $file_avatar_profile->move($dir.'/'.$user->getUsername().'/avatar', $filename_avatar_profile);
+                    $file_avatar_profile->move($dir.'/'.$newUsername.'/avatar', $filename_avatar_profile);
                     $user->setAvatar(''.$filename_avatar_profile.'');
                 } else {
                     $user->setAvatar('avatar.jpg');
                 }
                 if($user->getBanner() !== NULL) {
-                    try {
-                        $filesystem->mkdir($dir.'/'.$user->getUsername().'/banner');
-                    } catch (IOExceptionInterface $exception) {
-                        echo "An error occurred while creating your directory at ".$exception->getPath();
-                    }
                     $file_banner_profile = $form->get('banner')->getData();
                     $filename_banner_profile = 'banner'.'.jpg';
-                    $file_banner_profile->move($dir.'/'.$user->getUsername().'/banner', $filename_banner_profile);
+                    $file_banner_profile->move($dir.'/'.$newUsername.'/banner', $filename_banner_profile);
                     $user->setBanner(''.$filename_banner_profile.'');
                 } else {
                     $user->setBanner('banner.jpg');
                 }
                 $manager->persist($user);
                 $manager->flush();
+
+                return $this->redirectToRoute('user_profile', ['username'=>$newUsername]);
             }
 
             return $this->render('user/edit.html.twig', [
@@ -221,7 +210,7 @@ class UserController extends AbstractController
 
     /**
      * @Route("/member/reset_password", name="user_reset_password")
-     * @Route("/member/reset_password/{token}", name="")
+     * @Route("/member/reset_password/{tokenURL}", name="")
      */
     public function resetPassword($tokenURL = NULL, ObjectManager $manager, UserRepository $repo, Request $request, \Swift_Mailer $mailer, UserPasswordEncoderInterface $encoder)
     {
@@ -271,7 +260,7 @@ class UserController extends AbstractController
             if($userNewPassword->getNewPassword() !== NULL) {
                 $new_password = $userNewPassword->getNewPassword();
                 $user = $repo->findOneBy([
-                    'resetPasswordToken' => $token
+                    'resetPasswordToken' => $tokenURL
                 ]);
 
                 $user->setResetPasswordToken(NULL);
