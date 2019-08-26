@@ -160,7 +160,7 @@ class UserController extends AbstractController
     public function edit_profile(User $user, ObjectManager $manager, UserPasswordEncoderInterface $encoder, Request $request, Filesystem $filesystem) {
 
         if($user->getUsername() === $this->getUser()->getUsername()) {
-            
+
             $dir = 'uploads';
             $currentUsername = $user->getUsername();
             $form = $this->createForm(EditionProfileType::class, $user);
@@ -168,7 +168,7 @@ class UserController extends AbstractController
 
             if($form->isSubmitted() && $form->isValid()){
                 $newUsername = $user->getUsername();
-                
+
                 if($currentUsername !== $newUsername) {
                     $filesystem->rename($dir.'/'.$currentUsername.'', $dir.'/'.$newUsername.'');
                 }

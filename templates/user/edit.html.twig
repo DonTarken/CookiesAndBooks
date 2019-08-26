@@ -16,10 +16,16 @@
         })}}
         {{form_row(formEdit.description)}}
         {{form_row(formEdit.avatar, {
-            'required': false
+            'required': false,
+            'attr':{
+                'accept': 'image/png, image/jpeg, image/gif'
+            }
         })}}
         {{form_row(formEdit.banner, {
-            'required': false
+            'required': false,
+            'attr':{
+                'accept': 'image/png, image/jpeg, image/gif'
+            }
         })}}
 
         <button type="submit" class="btn btn-success">Enregistrer</button>
