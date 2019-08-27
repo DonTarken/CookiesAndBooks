@@ -104,7 +104,7 @@ class User implements UserInterface, \Serializable
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Assert\File(
-     *     maxSize = "3M", 
+     *     maxSize = "3M",
      *     mimeTypes = {"image/jpeg", "image/png", "image/gif"}
      * )
      */
@@ -113,7 +113,7 @@ class User implements UserInterface, \Serializable
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Assert\File(
-     *     maxSize = "3M", 
+     *     maxSize = "3M",
      *     mimeTypes = {"image/jpeg", "image/png", "image/gif"}
      * )
      */
